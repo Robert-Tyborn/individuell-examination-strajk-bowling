@@ -19,6 +19,7 @@ function Input({
         onChange={handleChange}
         defaultValue={defaultValue ? defaultValue : ''}
         disabled={disabled}
+        data-testid={label}
       />
     </section>
   );
