@@ -12,7 +12,8 @@ function Shoes({ updateSize, addShoe, removeShoe, shoes }) {
             <Input label={ label } type='text'
                 customClass='shoes__input'
                 name={ input.id }
-                handleChange={ updateSize } />
+                handleChange={ updateSize }
+                data-testid={`shoe-size-${index}`}  />
             <button className='shoes__button shoes__button--small' 
             onClick={ () => { removeShoe(input.id) }}>-</button>
         </article> )
