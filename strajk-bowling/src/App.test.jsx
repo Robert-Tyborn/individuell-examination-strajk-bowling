@@ -40,7 +40,7 @@ describe("Userstory 1 - BookingInfo component", () => {
     render(<BookingInfo />);
   });
 
-  test("user can select date, time, number of players and number of lanes", async () => {
+  test("user can select date and time and add the number of players and lanes", async () => {
     // Find the input elements by data-testid
     const dateInput = screen.getByTestId("Date");
     const timeInput = screen.getByTestId("Time");
