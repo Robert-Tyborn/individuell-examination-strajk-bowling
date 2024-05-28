@@ -2,9 +2,40 @@ import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import BookingInfo from "./components/BookingInfo/BookingInfo";
 import Shoes from "./components/Shoes/Shoes";
 import Confirmation from "./components/Confirmation/Confirmation";
-import { describe } from "vitest";
+import { beforeEach, describe } from "vitest";
+import { useState } from "react";
 
-describe("Userstory 1 - BookingInfo", () => {
+// Mock component to handle state for Shoes component
+function MockShoesComponent() {
+  const [shoes, setShoes] = useState([]);
+
+  const updateSize = (e) => {
+    setShoes(
+      shoes.map((shoe) =>
+        shoe.id === e.target.name ? { ...shoe, size: e.target.value } : shoe
+      )
+    );
+  };
+
+  const addShoe = (id) => {
+    setShoes([...shoes, { id, size: "" }]);
+  };
+
+  const removeShoe = (id) => {
+    setShoes(shoes.filter((shoe) => shoe.id !== id));
+  };
+
+  return (
+    <Shoes
+      updateSize={updateSize}
+      addShoe={addShoe}
+      removeShoe={removeShoe}
+      shoes={shoes}
+    />
+  );
+}
+
+describe("Userstory 1 - BookingInfo component", () => {
   beforeEach(() => {
     render(<BookingInfo />);
   });
@@ -47,13 +78,60 @@ describe("Userstory 1 - BookingInfo", () => {
   });
 });
 
-describe("Userstory 2 and 3 - Shoes", () => {
+describe("Userstory 2 and 3 - Shoes component", () => {
+  beforeEach(() => {
+    render(<MockShoesComponent />);
+  });
+
   test("user can add shoe size for each player", () => {
-    const addButton = screen;
+    const addButton = screen.getByTestId("add-shoe");
+
+    // Simulate adding two shoe size fields
+    fireEvent.click(addButton);
+    fireEvent.click(addButton);
+    console.log("Add button clicked twice");
+
+    // Get all shoe input fields
+    const shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
+    console.log("Number of shoe inputs after adding:", shoeInputs.length);
+    expect(shoeInputs).toHaveLength(2);
+
+    // Simulate entering shoe sizes
+    fireEvent.change(shoeInputs[0], { target: { value: "42" } });
+    fireEvent.change(shoeInputs[1], { target: { value: "38" } });
+    console.log("Shoe sizes set to 42 and 38");
+
+    // Verify the shoe sizes
+    expect(shoeInputs[0].value).toBe("42");
+    expect(shoeInputs[1].value).toBe("38");
+  });
+
+  test("user can remove a shoe size field", () => {
+    const addButton = screen.getByTestId("add-shoe");
+
+    // Simulate adding two shoe size fields
+    fireEvent.click(addButton);
+    fireEvent.click(addButton);
+    console.log("Add button clicked twice");
+
+    // Get all shoe input fields
+    let shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
+    console.log("Number of shoe inputs after adding:", shoeInputs.length);
+    expect(shoeInputs).toHaveLength(2);
+
+    // Simulate removing the first shoe size field
+    const removeButtons = screen.getAllByTestId(/remove-shoe-\d+/);
+    fireEvent.click(removeButtons[0]);
+    console.log("Remove button clicked for the first shoe");
+
+    // Verify the number of shoe input fields after removal
+    shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
+    console.log("Number of shoe inputs after removing:", shoeInputs.length);
+    expect(shoeInputs).toHaveLength(1);
   });
 });
 
-describe("Userstory 5 - Confirmation", () => {
+describe("Userstory 5 - Confirmation component", () => {
   // Test case to ensure the user can navigate back to the booking page
   test("user can go back to the booking page", async () => {
     // Mock function to simulate the setConfirmation function
