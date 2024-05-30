@@ -1,9 +1,7 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import BookingInfo from "./components/BookingInfo/BookingInfo";
-import Shoes from "./components/Shoes/Shoes";
 import Confirmation from "./components/Confirmation/Confirmation";
 import { beforeEach, describe } from "vitest";
-import { useState } from "react";
 import Booking from "./views/Booking";
 
 describe("Userstory 1 - BookingInfo component", () => {
