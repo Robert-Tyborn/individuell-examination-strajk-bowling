@@ -74,7 +74,7 @@ describe("Userstory 2 and 3 - Shoes", () => {
     console.log("Verified shoe sizes");
   });
 
-  test("user can remove a shoe size field if too many were added", () => {
+  test("user can remove a shoe size field", () => {
     render(<Booking />);
 
     // Click the add button twice
