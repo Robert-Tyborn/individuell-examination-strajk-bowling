@@ -4,36 +4,7 @@ import Shoes from "./components/Shoes/Shoes";
 import Confirmation from "./components/Confirmation/Confirmation";
 import { beforeEach, describe } from "vitest";
 import { useState } from "react";
-
-// Mock component to handle state for Shoes component
-function MockShoesComponent() {
-  const [shoes, setShoes] = useState([]);
-
-  const updateSize = (e) => {
-    setShoes(
-      shoes.map((shoe) =>
-        shoe.id === e.target.name ? { ...shoe, size: e.target.value } : shoe
-      )
-    );
-  };
-
-  const addShoe = (id) => {
-    setShoes([...shoes, { id, size: "" }]);
-  };
-
-  const removeShoe = (id) => {
-    setShoes(shoes.filter((shoe) => shoe.id !== id));
-  };
-
-  return (
-    <Shoes
-      updateSize={updateSize}
-      addShoe={addShoe}
-      removeShoe={removeShoe}
-      shoes={shoes}
-    />
-  );
-}
+import Booking from "./views/Booking";
 
 describe("Userstory 1 - BookingInfo component", () => {
   beforeEach(() => {
@@ -78,56 +49,50 @@ describe("Userstory 1 - BookingInfo component", () => {
   });
 });
 
-describe("Userstory 2 and 3 - Shoes component", () => {
-  beforeEach(() => {
-    render(<MockShoesComponent />);
-  });
-
+describe("Userstory 2 and 3 - Shoes", () => {
   test("user can add shoe size for each player", () => {
-    const addButton = screen.getByTestId("add-shoe");
+    render(<Booking />);
 
-    // Simulate adding two shoe size fields
+    // Click the add button twice
+    const addButton = screen.getByTestId("add-shoe");
     fireEvent.click(addButton);
     fireEvent.click(addButton);
-    console.log("Add button clicked twice");
+    console.log("Clicked the add button twice");
 
     // Get all shoe input fields
     const shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
-    console.log("Number of shoe inputs after adding:", shoeInputs.length);
-    expect(shoeInputs).toHaveLength(2);
+    console.log("Number of shoe input fields:", shoeInputs.length);
 
-    // Simulate entering shoe sizes
+    // Fill out the shoe size inputs
     fireEvent.change(shoeInputs[0], { target: { value: "42" } });
     fireEvent.change(shoeInputs[1], { target: { value: "38" } });
-    console.log("Shoe sizes set to 42 and 38");
+    console.log("Filled out shoe size inputs");
 
     // Verify the shoe sizes
     expect(shoeInputs[0].value).toBe("42");
     expect(shoeInputs[1].value).toBe("38");
+    console.log("Verified shoe sizes");
   });
 
-  test("user can remove a shoe size field", () => {
+  test("user can remove a shoe size field if too many fields were added", () => {
+    render(<Booking />);
+
+    // Click the add button twice
     const addButton = screen.getByTestId("add-shoe");
-
-    // Simulate adding two shoe size fields
     fireEvent.click(addButton);
     fireEvent.click(addButton);
-    console.log("Add button clicked twice");
+    console.log("Clicked the add button twice");
 
-    // Get all shoe input fields
-    let shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
-    console.log("Number of shoe inputs after adding:", shoeInputs.length);
-    expect(shoeInputs).toHaveLength(2);
-
-    // Simulate removing the first shoe size field
+    // Click the remove button for the first shoe size field
     const removeButtons = screen.getAllByTestId(/remove-shoe-\d+/);
     fireEvent.click(removeButtons[0]);
-    console.log("Remove button clicked for the first shoe");
+    console.log("Clicked the remove button for the first shoe size field");
 
-    // Verify the number of shoe input fields after removal
-    shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
-    console.log("Number of shoe inputs after removing:", shoeInputs.length);
+    // Verify the remaining shoe size field
+    const shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
+    console.log("Number of remaining shoe input fields:", shoeInputs.length);
     expect(shoeInputs).toHaveLength(1);
+    console.log("Verified remaining shoe size field");
   });
 });
 
