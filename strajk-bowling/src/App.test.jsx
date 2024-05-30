@@ -50,7 +50,7 @@ describe("Userstory 1 - BookingInfo component", () => {
 });
 
 describe("Userstory 2 and 3 - Shoes", () => {
-  test("user can add shoe size for each player", () => {
+  test("user can add a shoe size for each player", () => {
     render(<Booking />);
 
     // Click the add button twice
@@ -74,7 +74,7 @@ describe("Userstory 2 and 3 - Shoes", () => {
     console.log("Verified shoe sizes");
   });
 
-  test("user can remove a shoe size field if too many fields were added", () => {
+  test("user can remove a shoe size field if too many were added", () => {
     render(<Booking />);
 
     // Click the add button twice
@@ -98,7 +98,7 @@ describe("Userstory 2 and 3 - Shoes", () => {
 
 describe("Userstory 5 - Confirmation component", () => {
   // Test case to ensure the user can navigate back to the booking page
-  test("user can go back to the booking page", async () => {
+  test("user can navigate back to the booking view after receiving the booking confirmation", async () => {
     // Mock function to simulate the setConfirmation function
     const mockSetConfirmation = vi.fn();
 
