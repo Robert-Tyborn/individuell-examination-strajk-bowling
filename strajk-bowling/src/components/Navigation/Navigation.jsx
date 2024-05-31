@@ -7,14 +7,14 @@ function Navigation({ setConfirmation }) {
 
   return (
     <nav className={`navigation ${showMenu ? 'show-menu' : ''}`}>
-      <img
+      <img data-testid="burger"
         src={navicon}
         className='navigation__icon'
         onClick={() => {
           setShowMenu(!showMenu);
         }}
       />
-      <a
+      <a data-testid="goback"
         href='#'
         className={`navigation__link ${showMenu ? '' : 'hide'}`}
         onClick={() => {

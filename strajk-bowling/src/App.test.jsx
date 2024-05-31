@@ -128,41 +128,44 @@ describe("User story 4 - Booking submission", () => {
 });
 
 describe("Userstory 5 - Confirmation component", () => {
-  // Test case to ensure the user can navigate back to the booking page
+  beforeEach(() => {
+    render(<Booking />);
+  });
+
   test("user can navigate back to the booking view after receiving the booking confirmation", async () => {
-    // Mock function to simulate the setConfirmation function
-    const mockSetConfirmation = vi.fn();
+    // Fill out booking information
+    const date = screen.getByTestId("Date");
+    const time = screen.getByTestId("Time");
+    const numberOfPlayers = screen.getByTestId("Number of awesome bowlers");
+    const lanes = screen.getByTestId("Number of lanes");
 
-    // Sample confirmation details to pass as props to the Confirmation component
-    const confirmationDetails = {
-      active: true,
-      when: "2024-05-29T20:30",
-      people: "4",
-      lanes: "2",
-      id: "ABC123",
-      price: 680,
-    };
+    fireEvent.change(date, { target: { value: "2024-05-29" } });
+    fireEvent.change(time, { target: { value: "20:30" } });
+    fireEvent.change(numberOfPlayers, { target: { value: "2" } });
+    fireEvent.change(lanes, { target: { value: "1" } });
 
-    // Render the Confirmation component with the provided props
-    console.log(
-      "Rendering Confirmation component with props:",
-      confirmationDetails
-    );
-    render(
-      <Confirmation
-        confirmationDetails={confirmationDetails}
-        setConfirmation={mockSetConfirmation}
-      />
-    );
+    fireEvent.click(screen.getByText("+"));
+    fireEvent.click(screen.getByText("+"));
 
-    // Find the back button within the rendered component
-    const backButton = screen.getByRole("button");
-    
-    fireEvent.click(backButton);
-
-    // Wait for the mockSetConfirmation function to be called
     await waitFor(() => {
-      expect(screen.getByText("When, WHAT & Who")).toBeInTheDocument();
+      const shoe1 = screen.getByTestId("Shoe size / person 1");
+      const shoe2 = screen.getByTestId("Shoe size / person 2");
+      fireEvent.change(shoe1, { target: { value: "42" } });
+      fireEvent.change(shoe2, { target: { value: "43" } });
+    });
+
+    // Submit the booking
+    fireEvent.click(screen.getByText("strIIIIIike!"));
+
+    await waitFor(() => {
+      expect(screen.getByText("See you soon!")).toBeInTheDocument();
+    });
+    fireEvent.click(screen.getByTestId("burger"));
+    fireEvent.click(screen.getByTestId("goback"));
+
+    // Wait for the confirmation to be displayed
+    await waitFor(() => {
+      expect(screen.getByText("When, WHAT & Who"));
     });
   });
 });
