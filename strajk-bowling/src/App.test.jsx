@@ -55,21 +55,17 @@ describe("Userstory 2 and 3 - Shoes", () => {
     const addButton = screen.getByTestId("add-shoe");
     fireEvent.click(addButton);
     fireEvent.click(addButton);
-    console.log("Clicked the add button twice");
 
     // Get all shoe input fields
     const shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
-    console.log("Number of shoe input fields:", shoeInputs.length);
 
     // Fill out the shoe size inputs
     fireEvent.change(shoeInputs[0], { target: { value: "42" } });
     fireEvent.change(shoeInputs[1], { target: { value: "38" } });
-    console.log("Filled out shoe size inputs");
 
     // Verify the shoe sizes
     expect(shoeInputs[0].value).toBe("42");
     expect(shoeInputs[1].value).toBe("38");
-    console.log("Verified shoe sizes");
   });
 
   test("user can remove a shoe size field", () => {
@@ -79,18 +75,55 @@ describe("Userstory 2 and 3 - Shoes", () => {
     const addButton = screen.getByTestId("add-shoe");
     fireEvent.click(addButton);
     fireEvent.click(addButton);
-    console.log("Clicked the add button twice");
 
     // Click the remove button for the first shoe size field
     const removeButtons = screen.getAllByTestId(/remove-shoe-\d+/);
     fireEvent.click(removeButtons[0]);
-    console.log("Clicked the remove button for the first shoe size field");
 
     // Verify the remaining shoe size field
     const shoeInputs = screen.getAllByTestId(/Shoe size \/ person \d+/);
     console.log("Number of remaining shoe input fields:", shoeInputs.length);
     expect(shoeInputs).toHaveLength(1);
-    console.log("Verified remaining shoe size field");
+  });
+});
+
+describe("User story 4 - Booking submission", () => {
+  beforeEach(() => {
+    render(<Booking />);
+  });
+
+  test("user can submit the reservation", async () => {
+    // Fill out booking information
+    const date = screen.getByTestId("Date");
+    const time = screen.getByTestId("Time");
+    const numberOfPlayers = screen.getByTestId("Number of awesome bowlers");
+    const lanes = screen.getByTestId("Number of lanes");
+
+    fireEvent.change(date, { target: { value: "2024-05-29" } });
+    fireEvent.change(time, { target: { value: "20:30" } });
+    fireEvent.change(numberOfPlayers, { target: { value: "2" } });
+    fireEvent.change(lanes, { target: { value: "1" } });
+
+    fireEvent.click(screen.getByText("+"));
+    fireEvent.click(screen.getByText("+"));
+
+    await waitFor(() => {
+      const shoe1 = screen.getByTestId("Shoe size / person 1");
+      const shoe2 = screen.getByTestId("Shoe size / person 2");
+      fireEvent.change(shoe1, { target: { value: "42" } });
+      fireEvent.change(shoe2, { target: { value: "43" } });
+    });
+
+    // Submit the booking
+    fireEvent.click(screen.getByText("strIIIIIike!"));
+
+    // Wait for the confirmation to be displayed
+    await waitFor(() => {
+      expect(screen.getByText("See you soon!")).toBeInTheDocument();
+      expect(screen.getByDisplayValue("Rob666"));
+      expect(screen.getByDisplayValue("2"));
+      expect(screen.getByDisplayValue("1"));
+    });
   });
 });
 
@@ -124,17 +157,12 @@ describe("Userstory 5 - Confirmation component", () => {
 
     // Find the back button within the rendered component
     const backButton = screen.getByRole("button");
-    console.log("Back button found:", backButton);
-
-    // Simulate a click event on the back button
-    console.log("Simulating click event on back button");
+    
     fireEvent.click(backButton);
 
     // Wait for the mockSetConfirmation function to be called
     await waitFor(() => {
-      console.log("Checking if mockSetConfirmation was called");
-      expect(mockSetConfirmation).toHaveBeenCalledTimes(1);
-      console.log("mockSetConfirmation called successfully");
+      expect(screen.getByText("When, WHAT & Who")).toBeInTheDocument();
     });
   });
 });

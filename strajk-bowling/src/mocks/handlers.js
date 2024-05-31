@@ -1,25 +1,20 @@
+import { http, HttpResponse } from "msw";
 
-import { http, HttpResponse } from 'msw';
+const mockBookingDetails = {
+  when: "2024-05-29T20:30",
+  lanes: "1",
+  people: "2",
+  shoes: ["42", "43"],
+  price: 340,
+  id: "Rob666",
+  active: true,
+};
 
 export const handlers = [
-  // Mock POST request to submit reservation
-  http.post('https://example.com/user', (req, res, ctx) => {
-    // Sample confirmation details to return in the response
-    const confirmationDetails = {
-      active: true,
-      when: '2024-05-29T20:30',
-      people: '4',
-      lanes: '2',
-      id: 'ABC123',
-      price: 680,
-    };
-
-    // Return the confirmation details as part of the response
-    return res(
-      ctx.json({
-        confirmationDetails,
-        // Add any other data needed in the response
-      })
-    );
-  }),
+  http.post(
+    "https://h5jbtjv6if.execute-api.eu-north-1.amazonaws.com/",
+    () => {
+      return HttpResponse.json(mockBookingDetails, { status: 201 });
+    }
+  ),
 ];
